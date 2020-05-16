@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    {{ if .IsHome }}
+    <title>{{ .Site.Params.Title }} | {{ .Site.Params.subtitle}}</title>
+    {{ else }}
+    <title>{{ .Site.Params.Title }} | {{ .Title }}</title>
+    {{ end }}
+    <link rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css" />
+    {{ $styleFile := resources.Get "static/style.scss" | toCSS | minify }}
+    {{ $styleVersion := substr (md5 $styleFile) 0 6 }}
+    <link rel="stylesheet" href="{{ $styleFile.RelPermalink }}?v={{ $styleVersion }}" integrity="{{ $styleFile.Data.Integrity }}" media="screen" />
+    {{ $scriptFile := resources.Get "static/script.js" | minify }}
+    {{ $scriptVersion := substr (md5 $scriptFile) 0 6 }}
+    <script type="text/javascript" src="{{ $scriptFile.RelPermalink }}?v={{ $scriptVersion }}" integrity="{{ $scriptFile.Data.Integrity }}"></script>
+    {{ block "head" . }}{{ end }}
+    <script>
+
+    </script>
+</head>
+
+<body>
+    <header class="lay-header box-header"></header>
+    <div class="lay-wrapper">
+        <aside class="lay-aside box-aside">
+            <div class="box-shadow-without-top">
+                {{ partial "menu.html" . }}
+            </div>
+            <div class="box-ref box-shadow bg-white" id="id-fix">
+                {{ block "ref" . }}{{ end }}
+                {{ partial "ref-top.html" . }}
+            </div>
+        </aside>
+        <main class="lay-main box-main">
+            {{ block "main" . }}{{ end }}
+        </main>
+    </div>
+    <footer class="lay-footer box-footer">
+        <span>
+            Copyright
+            &nbsp;&copy;
+            &nbsp;2019-{{ now.Year }}
+            &nbsp;<a href="/">{{ .Site.Params.Author }}</a>,
+            &nbsp;All Rights Reserved.
+        </span>
+    </footer>
+</body>
+
+</html>
